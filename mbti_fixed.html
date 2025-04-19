@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBTI 검사</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+      background-color: #f8f9fa;
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 15px;
+      font-size: 16px;
+    }
+    #result {
+      margin-top: 30px;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>MBTI 검사</h1>
+  <form id="mbtiForm">
+    <label>출생연도</label>
+    <input type="number" id="birthYear" name="birthYear" required />
+
+    <div class="question">
+      <label>1. 친구들과 모임에서 나는...</label>
+      <input type="radio" name="q1" value="E" required /> 사람들과 어울리며 에너지를 얻는다  
+      <input type="radio" name="q1" value="I" /> 대화를 듣고 관찰하며 조용히 즐긴다
+    </div>
+
+    <div class="question">
+      <label>2. 프로젝트 시작 전 나는...</label>
+      <input type="radio" name="q2" value="S" required /> 필요한 자료와 정보를 수집한다  
+      <input type="radio" name="q2" value="N" /> 큰 그림을 먼저 상상해본다
+    </div>
+
+    <div class="question">
+      <label>3. 친구가 고민 상담을 할 때 나는...</label>
+      <input type="radio" name="q3" value="T" required /> 문제의 원인을 분석해 조언한다  
+      <input type="radio" name="q3" value="F" /> 감정을 공감하며 위로한다
+    </div>
+
+    <div class="question">
+      <label>4. 여행 일정을 짤 때 나는...</label>
+      <input type="radio" name="q4" value="J" required /> 시간 단위로 계획을 세운다  
+      <input type="radio" name="q4" value="P" /> 현지에서 즉흥적으로 움직인다
+    </div>
+
+    <div class="question">
+      <label>5. 새로운 사람들과 만났을 때 나는...</label>
+      <input type="radio" name="q5" value="E" required /> 먼저 말을 걸며 분위기를 이끈다  
+      <input type="radio" name="q5" value="I" /> 상대가 다가오면 반응한다
+    </div>
+
+    <div class="question">
+      <label>6. 업무 중 예상치 못한 일이 생기면 나는...</label>
+      <input type="radio" name="q6" value="S" required /> 기존 방식대로 해결하려 한다  
+      <input type="radio" name="q6" value="N" /> 새로운 방법을 고민해본다
+    </div>
+
+    <div class="question">
+      <label>7. 친구와 의견이 다를 때 나는...</label>
+      <input type="radio" name="q7" value="T" required /> 논리적으로 내 입장을 설명한다  
+      <input type="radio" name="q7" value="F" /> 감정을 상하지 않게 돌려 말한다
+    </div>
+
+    <div class="question">
+      <label>8. 주말 계획을 세울 때 나는...</label>
+      <input type="radio" name="q8" value="J" required /> 미리 예약하고 정리해둔다  
+      <input type="radio" name="q8" value="P" /> 당일 기분에 따라 정한다
+    </div>
+
+    <button type="submit">결과 보기</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const colorByYear = (year) => {
+      if (year >= 1980 && year <= 2015) {
+        const hue = ((year - 1980) / (2015 - 1980)) * 360;
+        return `hsl(${hue}, 70%, 50%)`;
+      }
+      return "#000000";
+    };
+
+    const mbtiDescriptions = {
+      ISTJ: "책임감 있고 신중한 관리자. 체계적인 계획을 선호합니다.",
+      ISFJ: "성실하고 따뜻한 수호자. 타인을 배려하며 조용히 헌신합니다.",
+      INFJ: "통찰력 있는 조언자. 조용하지만 강한 신념과 비전을 가지고 있습니다.",
+      INTJ: "전략적인 혁신가. 독립적이며 체계적으로 미래를 설계합니다.",
+      ISTP: "유연하고 관찰력 있는 장인. 문제 해결에 강하며 실용적인 성향입니다.",
+      ISFP: "섬세하고 온화한 예술가. 감성적이고 자유로운 분위기를 좋아합니다.",
+      INFP: "이상적이고 성찰적인 중재자. 내면의 가치와 조화를 중요하게 생각합니다.",
+      INTP: "논리적이고 분석적인 사색가. 새로운 아이디어에 대한 탐구를 즐깁니다.",
+      ESTP: "에너지 넘치고 현실적인 활동가. 즉흥적이고 모험을 즐깁니다.",
+      ESFP: "사교적이고 유쾌한 연예인. 사람들과 어울리는 걸 좋아합니다.",
+      ENFP: "열정적이고 창의적인 활동가. 다양한 가능성과 감정 표현에 능합니다.",
+      ENTP: "논쟁을 즐기는 발명가. 아이디어가 넘치며 토론을 즐깁니다.",
+      ESTJ: "체계적이고 단호한 관리자. 규칙과 원칙을 중요시합니다.",
+      ESFJ: "사려 깊고 친절한 외교관. 타인의 감정을 잘 파악하며 조화로운 분위기를 만듭니다.",
+      ENFJ: "따뜻하고 카리스마 있는 리더. 사람을 이끄는 능력에 뛰어납니다.",
+      ENTJ: "계획적이고 리더십 있는 전략가. 효율성과 목표 달성에 집중합니다.",
+    };
+
+    document.getElementById("mbtiForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const answers = Array.from(new FormData(this).values());
+      const counts = { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+
+      answers.forEach((a) => counts[a]++);
+
+      const mbti =
+        (counts.E >= counts.I ? "E" : "I") +
+        (counts.S >= counts.N ? "S" : "N") +
+        (counts.T >= counts.F ? "T" : "F") +
+        (counts.J >= counts.P ? "J" : "P");
+
+      const birthYear = parseInt(document.getElementById("birthYear").value);
+      const color = colorByYear(birthYear);
+
+      const description = mbtiDescriptions[mbti] || "개성 있는 성격 유형입니다.";
+
+      document.getElementById("result").innerHTML = `
+        <p style="color: ${color}; font-size: 24px;">당신의 MBTI는 <strong>${mbti}</strong>입니다.</p>
+        <p>${description}</p>
+      `;
+    });
+  </script>
+</body>
+</html>
